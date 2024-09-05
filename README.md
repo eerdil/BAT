@@ -16,4 +16,6 @@ pip install -r /path/to/requirements.txt
 python train.py --config_path <config_path>
 ```
 
-Please replace <config_path> with the one prepared for your data. One can use the example config file in ./config/Granada/granada_cfg.py. Please replace the data paths with the paths of your data.
+Please replace `<config_path>` with the one prepared for your data. One can use the example config file in `./config/Granada/granada_cfg.py.` Please replace the data paths with the paths of your data.
+
+The imaging data that we used in our experiments are not publicly available due to privacy reasons. Please see the data availability statement in our paper.
