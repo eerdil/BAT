@@ -10,6 +10,6 @@
 ```bash
 pip install -r /path/to/requirements.txt
 
-<button onclick="copyToClipboard('pip install -r /path/to/requirements.txt')">Copy</button>
-
-<button onclick="copyToClipboard('python train.py --config_path <config_path>')">Copy</button>
+### **2 - Running training code:**
+```bash
+python train.py --config_path <config_path>
