@@ -14,3 +14,6 @@ pip install -r /path/to/requirements.txt
 ### **2 - Running training code:**
 ```bash
 python train.py --config_path <config_path>
+```
+
+Please replace <config_path> with the one prepared for your data. One can use the example config file in ./config/Granada/granada_cfg.py. Please replace the data paths with the paths of your data.
