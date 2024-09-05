@@ -9,6 +9,7 @@
 ### **1 - Installing dependencies:**
 ```bash
 pip install -r /path/to/requirements.txt
+```
 
 ### **2 - Running training code:**
 ```bash
