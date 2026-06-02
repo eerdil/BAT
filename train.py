@@ -11,10 +11,10 @@ def main(exp_config):
 
     # =====================
     # Define network architecture
-    # =====================    
+    # =====================
     model = exp_config.model
     model.cuda()
-    
+
     # =========================
     # Load source dataset
     # =========================
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     torch.backends.cudnn.enabled = False
     
     parser = argparse.ArgumentParser(description="Script for training")
-    parser.add_argument("--config_path", type=str, help="Path to experiment config file")
+    parser.add_argument("--config_path", type=str, help="Path to experiment config file", required=True)
     args = parser.parse_args()
 
     config_file = args.config_path

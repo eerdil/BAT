@@ -5,7 +5,7 @@ from models.attention_unet import AttentionUNet
 # =======================
 # Experiment name / input dataset
 # =======================
-dataset = 'Granada'
+dataset = "../data/PT_CT_BAT/"
 experiment_name = '%s_experiment'%(dataset)
 
 # ==================
@@ -21,15 +21,15 @@ criterion_mse = nn.MSELoss()
 # ==============
 # Paths - !REPLACE WITH THE CORRECT PATH OF YOUR DATA
 # ==============
-path_train = '/%s/train'%(dataset)
-path_validation = '/%s/val'%(dataset)
-path_test = '/%s/test'%(dataset)
+path_train = '%s/train'%(dataset)
+path_validation = '%s/val'%(dataset)
+path_test = '%s/test'%(dataset)
 
-shuffle_validation = False
 shuffle_train = True
+shuffle_validation = False
 shuffle_test = False
 
-path_to_save_pretrained_models = './pre_trained/%s/%s'%(dataset, experiment_name)
+path_to_save_pretrained_models = './pre_trained/Granada/'
 
 # ======================================
 # Transformations for data augmentation
