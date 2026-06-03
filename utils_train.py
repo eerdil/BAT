@@ -51,7 +51,7 @@ def train_segmentation_network(exp_config, model, loader_train, loader_val, path
         counter = 0
         for data, target in loader_val:
 
-            data, target, norm_params = data.cuda(), target.cuda(), norm_params.cuda()
+            data, target = data.cuda(), target.cuda()
             pred_logits, _ = model(data)
 
             loss_val = criterion_mse(pred_logits, target)
@@ -65,9 +65,10 @@ def train_segmentation_network(exp_config, model, loader_train, loader_val, path
         # =========
         # SAVE Model
         # =========
-        print('epoch:%d - loss_tr: %.5f loss_val: %.5f  - saved' %
+        print('epoch:%d - loss_tr: %.5f loss_val: %.5f' %
                   (epoch, running_loss_train, running_loss_val))
         
         if epoch == 0 or best_loss_val > running_loss_val:
             best_loss_val = running_loss_val
-            torch.save(model.state_dict(), ('%s/model.pth')%(path_to_save_pretrained_models))
+            torch.save(model.state_dict(), ('%smodel.pth')%(path_to_save_pretrained_models))
+            print("best epoch: %d -> saved in ('%smodel.pth')"%(epoch, path_to_save_pretrained_models))

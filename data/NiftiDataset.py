@@ -14,14 +14,20 @@ class NiftiDataset(data.Dataset):
         super().__init__()
         self.transform = transform
         self.path = path
-        
+
         # Note that correspongind PET/CT scans should be in the same index after sorting!
-        self.ct_names = [s for s in os.listdir(path) if ('_CT_' in s)]
+        self.ct_names = [
+            s for s in os.listdir(path)
+            if s.endswith((".nii", ".nii.gz")) and "_CT" in s
+        ]
         self.ct_names.sort()
-        
-        self.pet_names = [s for s in os.listdir(path) if ('_PET_' in s)]
+
+        self.pet_names = [
+            s for s in os.listdir(path)
+            if s.endswith((".nii", ".nii.gz")) and "_PET" in s
+        ]
         self.pet_names.sort()
-        
+
         # Store the min/max/99th percentile values of each subjects in a csv file
         path_ct = '%s/ct_min_max_percentile.csv'%(path)
         path_pet = '%s/pet_min_max_percentile.csv'%(path)
@@ -33,7 +39,6 @@ class NiftiDataset(data.Dataset):
         self.ct_min, self.ct_max, self.ct_99_percentile = df_ct['min'], df_ct['max'], df_ct['99_percentile']
         self.pet_min, self.pet_max, self.pet_99_percentile = df_pet['min'], df_pet['max'], df_pet['99_percentile']
 
-                    
     def __getitem__(self, index):
         # Read data from Nifti files
         ct = nib.load('%s/%s'%(self.path, self.ct_names[index])).get_fdata()
@@ -41,10 +46,16 @@ class NiftiDataset(data.Dataset):
         
         # Find the index of the current patients to be able to get the correct min/max/99th percentile values of the subject/
         try:
-            patient_name_current = int(self.ct_names[index][:-14])
+            ct_name = self.ct_names[index]
+
+            patient_name_current = (
+                ct_name
+                .replace("_CT.nii.gz", "")
+                .replace("_CT.nii", "")
+            )
         except ValueError:
             patient_name_current = self.ct_names[index][:-14]
-        
+
         index_patient = np.where(self.patient_names == patient_name_current)[0][0]
         ct_min_current, ct_99_percentile_current = self.ct_min[index_patient], self.ct_99_percentile[index_patient]
         pet_min_current, pet_99_percentile_current = np.min(self.pet_min), np.percentile(self.pet_max, 99)
@@ -57,6 +68,22 @@ class NiftiDataset(data.Dataset):
         pet = pet.astype(np.float32)
 
         sample = {'image': ct, 'target': pet}
+
+        # image and target are currently volumes: (480, 320, C)
+        num_slices = sample['image'].shape[2]
+
+        # choose a random axial slice during training
+        slice_idx = np.random.randint(0, num_slices)
+
+        image = sample['image'][:, :, slice_idx]
+        target = sample['target'][:, :, slice_idx]
+
+        # PIL/transforms expect 2D, or H,W,1 depending on your transforms
+        # here keep H,W; transformations.py will add channel if needed
+        sample = {
+            "image": image.astype(np.float32),
+            "target": target.astype(np.float32),
+        }
 
         # Applt transformation
         if self.transform != None:
